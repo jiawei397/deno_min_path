@@ -18,13 +18,16 @@
   <canvas id="canvas" width="1000" height="1000"></canvas>
 
   <script type="module">
-    import main from './index.js';
+    import main, { getAllDis } from './index.js';
 
-    let Bei = 50;
+
+    let Bei = 80;
 
     const canvasPoints = (oldPoints, newPoints) => {
       let canvasEle = document.getElementById('canvas');
       let ctx = canvasEle.getContext('2d');
+
+      if (!ctx) return;
 
       // 画线
       for (let i = 0; i < newPoints.length; i++) {
@@ -45,16 +48,21 @@
         ctx.fill();
 
         // 写字
-        ctx.font = '20px "微软雅黑"';
-        ctx.fillStyle = 'blue';
+        ctx.font = '12px "微软雅黑"';
+        ctx.fillStyle = 'grey';
         ctx.textBaseline = 'top';
-        ctx.fillText(i, x * Bei, y * Bei);
+        ctx.fillText(` ${i}（${x}，${y}）`, x * Bei, y * Bei);
       }
     };
 
-    const { originPoints, finalPoints } = main();
 
+    const { originPoints, finalPoints, dist } = main();
+    console.log(dist);
     canvasPoints(originPoints, finalPoints);
+
+    // const indexes = [0, 6, 5, 4, 3, 2, 1];
+    // const points = indexes.map((index) => originPoints[index]);
+    // console.log(getAllDis(points));
   </script>
 </body>
 

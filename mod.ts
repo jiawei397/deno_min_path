@@ -7,33 +7,41 @@ function getDis(p1: Point, p2: Point) {
   return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
-function sort(points: Point[]) {
+function sort(points: Point[]): Point[] {
   points.sort((a, b) => {
     if (a.x < b.x) return -1;
     if (a.x > b.x) return 1;
     if (a.y < b.y) return -1;
     return 0;
   });
-  for (let i = 0; i < points.length; i++) {
-    const node1 = points[i];
-    const node2 = points[i + 1];
-    if (!node2) {
-      break;
-    }
-    const node3 = points[i + 2];
-    if (!node3) {
-      break;
-    }
-    const dis1 = getDis(node1, node2) + getDis(node2, node3);
-    const dis2 = getDis(node1, node3) + getDis(node3, node2);
-    if (dis1 > dis2) {
-      points[i + 1] = node3;
-      points[i + 2] = node2;
-    }
+  const lastPoints = [points.shift()!];
+  while (points.length > 0) {
+    const currentNode = lastPoints.at(-1)!;
+    const { node, index } = find3Node(currentNode, points);
+    lastPoints.push(node);
+    points.splice(index, 1);
   }
+  return lastPoints;
 }
 
-function getAllDis(points: Point[]) {
+function find3Node(currentNode: Point, list: Point[]) {
+  const map: Record<number, {
+    index: number;
+    node: Point;
+  }> = {};
+  const last = Math.min(...list.map((node, index) => {
+    const dis = getDis(node, currentNode);
+    map[dis] = {
+      index,
+      node,
+    };
+    return dis;
+  }));
+  console.log("Found ", map[last]);
+  return map[last];
+}
+
+export function getAllDis(points: Point[]) {
   let dis = 0;
   points.reduce((pre, cur) => {
     //   console.log(pre, cur);
@@ -52,14 +60,16 @@ function getIndexes(lastPoints: Point[], originPoints: Point[]) {
 }
 
 function getPath(points: Point[]) {
+  console.time("getPath");
   const originPoints = [...points];
-  sort(points);
+  const lastPoints = sort(points);
   const indexes = getIndexes(points, originPoints);
-  const dist = getAllDis(points);
+  const dist = getAllDis(lastPoints);
+  console.timeEnd("getPath");
   return {
     dist,
     path: indexes,
-    finalPoints: points,
+    finalPoints: lastPoints,
     originPoints,
   };
 }
@@ -67,7 +77,7 @@ function getPath(points: Point[]) {
 const points = [
   { "x": 0, "y": 0 },
   { "x": 2.8, "y": 6 },
-  { "x": 4.3, "y": 5.1 },
+  { "x": 1.3, "y": 5.1 },
   { "x": 1.3, "y": 4.5 },
   { "x": 2.1, "y": 3.3 },
   { "x": 1.3, "y": 2 },
