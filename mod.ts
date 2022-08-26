@@ -4,7 +4,11 @@ interface Point {
 }
 
 function getDis(p1: Point, p2: Point) {
-  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p1.y, 2));
+  return Math.sqrt(getSquares(p1, p2));
+}
+
+function getSquares(p1: Point, p2: Point) {
+  return Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p1.y, 2);
 }
 
 function sort(points: Point[]): Point[] {
@@ -15,11 +19,12 @@ function sort(points: Point[]): Point[] {
     return 0;
   });
   const lastPoints = [points.shift()!];
+  let currentNode = lastPoints[0];
   while (points.length > 0) {
-    const currentNode = lastPoints.at(-1)!;
     const { node, index } = find3Node(currentNode, points);
     lastPoints.push(node);
     points.splice(index, 1);
+    currentNode = node;
   }
   return lastPoints;
 }
@@ -30,7 +35,7 @@ function find3Node(currentNode: Point, list: Point[]) {
     node: Point;
   }> = {};
   const last = Math.min(...list.map((node, index) => {
-    const dis = getDis(node, currentNode);
+    const dis = getSquares(node, currentNode);
     map[dis] = {
       index,
       node,
@@ -45,7 +50,7 @@ export function getAllDis(points: Point[]) {
   let dis = 0;
   points.reduce((pre, cur) => {
     //   console.log(pre, cur);
-    dis += Math.sqrt(Math.pow(cur.x - pre.x, 2) + Math.pow(cur.y - pre.y, 2));
+    dis += getDis(pre, cur);
     return cur;
   });
   return dis;
@@ -75,6 +80,7 @@ function getPath(points: Point[]) {
 }
 
 const points = [
+  //   { "x": 0, "y": 1 },
   { "x": 0, "y": 0 },
   { "x": 2.8, "y": 6 },
   { "x": 1.3, "y": 5.1 },
