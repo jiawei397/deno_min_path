@@ -1,0 +1,6 @@
+scripts:
+  build:
+    cmd: "deno bundle mod.ts index.js"
+    watch: false
+    
+  
