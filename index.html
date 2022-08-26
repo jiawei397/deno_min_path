@@ -15,20 +15,46 @@
 
   </div>
 
-  <script src="./index.js"></script>
-  <script>
-    const drawPoints = (pointArr) => {
-      const container = document.querySelector('.container');
+  <canvas id="canvas" width="1000" height="1000"></canvas>
 
-      pointArr.forEach((item) => {
-        let point = document.createElement('div');
-        point.classList.add('point');
-        point.style.left = `${item.x * 50}px`;
-        point.style.top = `${item.y * 50}px`;
-        container.appendChild(point);
-      });
-    }
-    drawPoints(points);
+  <script type="module">
+    import main from './index.js';
+
+    let Bei = 50;
+
+    const canvasPoints = (oldPoints, newPoints) => {
+      let canvasEle = document.getElementById('canvas');
+      let ctx = canvasEle.getContext('2d');
+
+      // 画线
+      for (let i = 0; i < newPoints.length; i++) {
+        const curNode = newPoints[i];
+        const nextNode = newPoints[i + 1];
+        if (!nextNode) break;
+        ctx.moveTo(curNode.x * Bei, curNode.y * Bei);
+        ctx.lineTo(nextNode.x * Bei, nextNode.y * Bei);
+        ctx.stroke();
+      }
+
+      // 画圆点
+      for (let i = 0; i < oldPoints.length; i++) {
+        let { x, y } = oldPoints[i];
+        ctx.beginPath();
+        ctx.arc(x * Bei, y * Bei, 6, 0, 2 * Math.PI, false);
+        ctx.fillStyle = '#FF0000';
+        ctx.fill();
+
+        // 写字
+        ctx.font = '20px "微软雅黑"';
+        ctx.fillStyle = 'blue';
+        ctx.textBaseline = 'top';
+        ctx.fillText(i, x * Bei, y * Bei);
+      }
+    };
+
+    const { originPoints, finalPoints } = main();
+
+    canvasPoints(originPoints, finalPoints);
   </script>
 </body>
 

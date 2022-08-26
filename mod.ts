@@ -59,7 +59,7 @@ function getPath(points: Point[]) {
   return {
     dist,
     path: indexes,
-    points,
+    finalPoints: points,
     originPoints,
   };
 }
@@ -78,8 +78,9 @@ const points = [
 
 // console.log(points);
 
-function main() {
-  console.log(getPath(points));
+export default function main() {
+  //   console.log(getPath(points));
+  return getPath(points);
 }
 
-main();
+// main();
