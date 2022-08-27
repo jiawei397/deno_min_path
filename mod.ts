@@ -78,11 +78,9 @@ export function getAllDis(points: Point[]) {
 }
 
 function getIndexes(lastPoints: Point[], originPoints: Point[]) {
-  return lastPoints.map((point) => {
-    return originPoints.findIndex((point2) =>
-      point2.x >= point.x && point2.y == point.y
-    );
-  });
+  return lastPoints.map((point) =>
+    originPoints.findIndex((point2) => point2 === point)
+  );
 }
 
 function getPath(points: Point[]) {
