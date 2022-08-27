@@ -25,7 +25,10 @@ function findMinPath(points: Point[]): {
   let minDist = Infinity;
   let minPath: Point[] = [];
   let count = 0;
-  const paths: Point[][] = [];
+  const paths: {
+    dist: number;
+    path: Point[];
+  }[] = [];
   const len = points.length;
   let findIntactCount = 0;
   points.forEach((_, i) => {
@@ -33,13 +36,17 @@ function findMinPath(points: Point[]): {
       return;
     }
     count++;
-    paths.push([points[0], points[i]]);
+    paths.push({
+      dist: getDist(points[0], points[i]),
+      path: [points[0], points[i]],
+    });
   });
 
   while (paths.length) {
     count++;
-    const currentPath = paths.pop()!;
-    const currentDist = getAllDis(currentPath);
+    const current = paths.pop()!;
+    const currentPath = current.path;
+    const currentDist = current.dist;
     if (currentDist >= minDist) {
       continue;
     }
@@ -60,7 +67,10 @@ function findMinPath(points: Point[]): {
       if (newDist >= minDist) {
         return;
       }
-      paths.push(newPath);
+      paths.push({
+        dist: newDist,
+        path: newPath,
+      });
     });
   }
   return {
