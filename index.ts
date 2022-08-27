@@ -3,7 +3,7 @@ interface Point {
   y: number;
 }
 
-function getDis(p1: Point, p2: Point) {
+function getDist(p1: Point, p2: Point) {
   return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
@@ -56,8 +56,8 @@ function findMinPath(points: Point[]): {
         return;
       }
       const newPath = [...currentPath, point];
-      const currentDist = getAllDis(newPath);
-      if (currentDist >= minDist) {
+      const newDist = getDist(currentPath.at(-1)!, point) + currentDist;
+      if (newDist >= minDist) {
         return;
       }
       paths.push(newPath);
@@ -74,7 +74,7 @@ function findMinPath(points: Point[]): {
 function getAllDis(points: Point[]) {
   let dis = 0;
   points.reduce((pre, cur) => {
-    dis += getDis(pre, cur);
+    dis += getDist(pre, cur);
     return cur;
   });
   return dis;
@@ -131,5 +131,7 @@ if (import.meta.main) {
     { "x": 5, "y": 5 },
     { "x": 6, "y": 5 },
   ];
+  console.time("run");
   getPath(points);
+  console.timeEnd("run");
 }
