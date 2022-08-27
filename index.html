@@ -113,14 +113,25 @@
       start(points);
     }
 
+    function downloadJson() {
+      const content = 'data:text/Json;charset=utf-8,' + encodeURIComponent(JSON.stringify(points, null, 2));
+      const a = document.createElement('a');
+      const event = new MouseEvent('click');
+      a.href = content;
+      a.download = 'points.json';
+      a.dispatchEvent(event);
+      document.removeChild(event);
+    }
+
     window.start = start;
     window.generate = generate;
     window.refresh = refresh;
+    window.downloadJson = downloadJson;
 
   </script>
   <style>
     header {
-      width: 300px;
+      width: 800px;
       height: 50px;
       /* border: 1px solid rebeccapurple; */
       display: flex;
@@ -154,6 +165,7 @@
     <button onclick="start()">origin</button>
     <button onclick="generate(13)">generate</button>
     <button onclick="refresh()">refresh</button>
+    <button onclick="downloadJson()" style="width: 120px">download points</button>
   </header>
   <div class="container">
     <canvas id="canvas" width="1300" height="1000"></canvas>
