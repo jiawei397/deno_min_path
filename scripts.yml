@@ -1,9 +1,9 @@
 scripts:
   dev:
-    cmd: "deno run mod.ts"
+    cmd: "deno run index.ts"
     watch: false
   build:
-    cmd: "deno bundle mod.ts index.js"
+    cmd: "deno bundle index.ts index.js"
     watch: false  
     
   
