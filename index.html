@@ -50,14 +50,19 @@
       }, 100);
     }
 
-    function draw({ originPoints, finalPoints, dist, time, count }) {
+    function draw({ originPoints, finalPoints, dist, time, count, path }) {
       let Bei = 60;
       let canvasEle = document.getElementById('canvas');
+      if (!canvasEle.getContext) {
+        alert("Browser does not support canvas!");
+      }
       let ctx = canvasEle.getContext('2d');
       var w = canvasEle.width;
       var h = canvasEle.height;
       canvasEle.width = w;
       canvasEle.height = h;
+
+      ctx.translate(10, 10);
 
       // 画线
       for (let i = 0; i < finalPoints.length; i++) {
@@ -81,19 +86,22 @@
         ctx.font = '12px "微软雅黑"';
         ctx.fillStyle = 'grey';
         ctx.textBaseline = 'top';
-        ctx.fillText(` ${i}（${x}，${y}）`, x * Bei, (y + 0.1) * Bei);
+        ctx.fillText(` ${i} [${x}, ${y}]`, x * Bei, (y + 0.1) * Bei);
       }
 
       // 写字
       ctx.font = '20px "微软雅黑"';
       ctx.fillStyle = "red";
-      ctx.fillText(`dist: ${dist}`, 900, 50);
+      ctx.fillText(`dist: ${dist}`, 900, 0);
 
       ctx.fillStyle = "green";
-      ctx.fillText(`time: ${time} ms`, 900, 100);
+      ctx.fillText(`time: ${time} ms`, 900, 50);
 
       ctx.fillStyle = "blue";
-      ctx.fillText(`count: ${count}`, 900, 150);
+      ctx.fillText(`count: ${count}`, 900, 100);
+
+      ctx.fillStyle = "#abab17";
+      ctx.fillText(`path: ${path.join(', ')}`, 900, 150);
 
       ctx.fillStyle = "gray";
       ctx.fillText(`points:`, 900, 200);
