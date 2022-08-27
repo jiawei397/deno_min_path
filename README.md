@@ -19,3 +19,5 @@ const points = [
   { "x": 6, "y": 5 },
 ];
 ```
+
+Click the generate button will make an new points Array.
