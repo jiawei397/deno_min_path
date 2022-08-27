@@ -18,38 +18,60 @@ function sort(points: Point[]): Point[] {
     if (a.y < b.y) return -1;
     return 0;
   });
-  const lastPoints = [points.shift()!];
-  let currentNode = lastPoints[0];
-  while (points.length > 0) {
-    const { node, index } = find3Node(currentNode, points);
-    lastPoints.push(node);
-    points.splice(index, 1);
-    currentNode = node;
-  }
-  return lastPoints;
-}
 
-function find3Node(currentNode: Point, list: Point[]) {
-  const map: Record<number, {
-    index: number;
-    node: Point;
-  }> = {};
-  const last = Math.min(...list.map((node, index) => {
-    const dis = getSquares(node, currentNode);
-    map[dis] = {
-      index,
-      node,
-    };
-    return dis;
-  }));
-  console.log("Found ", map[last]);
-  return map[last];
+  let minDist = Infinity;
+  let minPath: number[] = [];
+
+  function getAllPath() {
+    const lastPaths: number[][] = [];
+    const paths: number[][] = [];
+    const len = points.length;
+    let allIndexes = Array.from(new Array(points.length)).map((_, i) => i);
+    console.log(
+      "🚀 ~ file: mod.ts ~ line 31 ~ getAllPath ~ allIndexes",
+      allIndexes,
+    );
+    points.forEach((_, i) => {
+      if (i === 0) {
+        return;
+      }
+      paths.push([0, i]);
+    });
+
+    while (paths.length) {
+      const first = paths.shift()!;
+      if (first.length === len) {
+        lastPaths.push(first);
+        continue;
+      }
+      allIndexes.forEach((i) => {
+        if (first.includes(i)) {
+          return;
+        }
+        paths.push([...first, i]);
+      });
+    }
+    return lastPaths;
+  }
+
+  console.time("getAllPath");
+  const paths = getAllPath();
+  console.timeEnd("getAllPath");
+
+  paths.forEach((path) => {
+    const dist = getAllDis(path.map((index) => points[index]));
+    if (dist < minDist) {
+      minDist = dist;
+      minPath = path;
+    }
+  });
+
+  return minPath.map((index) => points[index]);
 }
 
 export function getAllDis(points: Point[]) {
   let dis = 0;
   points.reduce((pre, cur) => {
-    //   console.log(pre, cur);
     dis += getDis(pre, cur);
     return cur;
   });
@@ -89,6 +111,21 @@ const points = [
   { "x": 1.3, "y": 2 },
   { "x": 1, "y": 1 },
 ];
+// const points = [
+//   { "x": 0, "y": 0 },
+//   { "x": 1, "y": 0 },
+//   { "x": 1, "y": 1 },
+//   { "x": 2, "y": 1 },
+//   { "x": 3, "y": 4 },
+//   { "x": 4, "y": 4 },
+//   { "x": 3, "y": 5 },
+//   { "x": 5, "y": 0 },
+//   { "x": 6, "y": 0 },
+//   { "x": 6, "y": 1 },
+//   { "x": 5, "y": 4 },
+//   { "x": 5, "y": 5 },
+//   { "x": 6, "y": 5 },
+// ];
 // const indexes = [0, 6, 5, 4, 3, 1, 2];
 // console.log(indexes.map((index) => points[index]));
 
