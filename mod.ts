@@ -19,19 +19,23 @@ function sort(points: Point[]) {
 function findMinPath(points: Point[]): {
   minPath: Point[];
   minDist: number;
+  count: number;
 } {
   let minDist = Infinity;
   let minPath: Point[] = [];
+  let count = 0;
   const paths: Point[][] = [];
   const len = points.length;
   points.forEach((_, i) => {
     if (i === 0) {
       return;
     }
+    count++;
     paths.push([points[0], points[i]]);
   });
 
   while (paths.length) {
+    count++;
     const currentPath = paths.pop()!;
     const currentDist = getAllDis(currentPath);
     if (currentDist >= minDist) {
@@ -59,6 +63,7 @@ function findMinPath(points: Point[]): {
   return {
     minPath,
     minDist,
+    count,
   };
 }
 
@@ -81,12 +86,13 @@ function getPath(points: Point[]) {
   const startTime = Date.now();
   const clonedPoints = [...points];
   sort(clonedPoints);
-  const { minDist, minPath } = findMinPath(points);
+  const { minDist, minPath, count } = findMinPath(points);
   const indexes = getIndexes(minPath, points);
   return {
     dist: minDist,
     path: indexes,
     time: Date.now() - startTime,
+    count,
     finalPoints: minPath,
     originPoints: points,
   };

@@ -50,7 +50,7 @@
       }, 100);
     }
 
-    function draw({ originPoints, finalPoints, dist, time }) {
+    function draw({ originPoints, finalPoints, dist, time, count }) {
       let Bei = 60;
       let canvasEle = document.getElementById('canvas');
       let ctx = canvasEle.getContext('2d');
@@ -91,6 +91,9 @@
 
       ctx.fillStyle = "green";
       ctx.fillText(`time: ${time} ms`, 900, 100);
+
+      ctx.fillStyle = "blue";
+      ctx.fillText(`count: ${count}`, 900, 150);
 
       ctx.fillStyle = "gray";
       ctx.fillText(`points:`, 900, 200);
