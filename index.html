@@ -6,16 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="./index.css">
+  <style>
+    #canvas {
+      padding: 50px;
+    }
+  </style>
 </head>
 
 <body>
 
-  <div class="container">
-
-  </div>
-
   <canvas id="canvas" width="1000" height="1000"></canvas>
+
 
   <script type="module">
     import main, { getAllDis } from './index.js';
@@ -23,7 +24,7 @@
 
     let Bei = 80;
 
-    const canvasPoints = (oldPoints, newPoints) => {
+    const canvasPoints = (oldPoints, newPoints, dist, time) => {
       let canvasEle = document.getElementById('canvas');
       let ctx = canvasEle.getContext('2d');
 
@@ -51,14 +52,24 @@
         ctx.font = '12px "微软雅黑"';
         ctx.fillStyle = 'grey';
         ctx.textBaseline = 'top';
-        ctx.fillText(` ${i}（${x}，${y}）`, x * Bei, y * Bei);
+        ctx.fillText(` ${i}（${x}，${y}）`, x * Bei, (y + 0.1) * Bei);
       }
+
+      // 写字
+      ctx.font = '20px "微软雅黑"';
+      ctx.fillStyle = "red";
+      ctx.fillText(`dist: ${dist}`, 800, 100);
+
+      ctx.font = '20px "微软雅黑"';
+      ctx.fillStyle = "green";
+      ctx.fillText(`time: ${time} ms`, 800, 150);
+
     };
 
 
-    const { originPoints, finalPoints, dist } = main();
-    console.log(dist);
-    canvasPoints(originPoints, finalPoints);
+    const { originPoints, finalPoints, dist, time } = main();
+    // console.log(dist);
+    canvasPoints(originPoints, finalPoints, dist, time);
 
     // const indexes = [0, 6, 5, 4, 3, 2, 1];
     // const points = indexes.map((index) => originPoints[index]);

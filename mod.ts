@@ -22,46 +22,40 @@ function findMinPath(points: Point[]): {
 } {
   let minDist = Infinity;
   let minPath: Point[] = [];
-
-  function getAllPath() {
-    const lastPaths: Point[][] = [];
-    const paths: Point[][] = [];
-    const len = points.length;
-    points.forEach((_, i) => {
-      if (i === 0) {
-        return;
-      }
-      paths.push([points[0], points[i]]);
-    });
-
-    while (paths.length) {
-      const first = paths.shift()!;
-      if (first.length === len) {
-        lastPaths.push(first);
-        continue;
-      }
-      points.forEach((point) => {
-        if (first.includes(point)) {
-          return;
-        }
-        paths.push([...first, point]);
-      });
+  const paths: Point[][] = [];
+  const len = points.length;
+  points.forEach((_, i) => {
+    if (i === 0) {
+      return;
     }
-    return lastPaths;
-  }
-
-  console.time("getAllPath");
-  const paths = getAllPath();
-  console.timeEnd("getAllPath");
-
-  paths.forEach((path) => {
-    const dist = getAllDis(path);
-    if (dist < minDist) {
-      minDist = dist;
-      minPath = path;
-    }
+    paths.push([points[0], points[i]]);
   });
 
+  while (paths.length) {
+    const currentPath = paths.pop()!;
+    const currentDist = getAllDis(currentPath);
+    if (currentDist >= minDist) {
+      continue;
+    }
+    if (currentPath.length === len) {
+      if (currentDist < minDist) {
+        minDist = currentDist;
+        minPath = currentPath;
+      }
+      continue;
+    }
+    points.forEach((point) => {
+      if (currentPath.includes(point)) {
+        return;
+      }
+      const newPath = [...currentPath, point];
+      const currentDist = getAllDis(newPath);
+      if (currentDist >= minDist) {
+        return;
+      }
+      paths.push(newPath);
+    });
+  }
   return {
     minPath,
     minDist,
@@ -84,6 +78,7 @@ function getIndexes(lastPoints: Point[], originPoints: Point[]) {
 }
 
 function getPath(points: Point[]) {
+  const startTime = Date.now();
   console.time("getPath");
   const originPoints = [...points];
   sort(points);
@@ -93,40 +88,37 @@ function getPath(points: Point[]) {
   return {
     dist: minDist,
     path: indexes,
+    time: Date.now() - startTime,
     finalPoints: minPath,
     originPoints,
   };
 }
 
-const points = [
-  //   { "x": 0, "y": 1 },
-  { "x": 0, "y": 0 },
-  { "x": 2.8, "y": 6 },
-  { "x": 1.3, "y": 5.1 },
-  { "x": 1.3, "y": 4.5 },
-  { "x": 2.1, "y": 3.3 },
-  { "x": 1.3, "y": 2 },
-  { "x": 1, "y": 1 },
-];
 // const points = [
+//   //   { "x": 0, "y": 1 },
 //   { "x": 0, "y": 0 },
-//   { "x": 1, "y": 0 },
+//   { "x": 2.8, "y": 6 },
+//   { "x": 1.3, "y": 5.1 },
+//   { "x": 1.3, "y": 4.5 },
+//   { "x": 2.1, "y": 3.3 },
+//   { "x": 1.3, "y": 2 },
 //   { "x": 1, "y": 1 },
-//   { "x": 2, "y": 1 },
-//   { "x": 3, "y": 4 },
-//   { "x": 4, "y": 4 },
-//   { "x": 3, "y": 5 },
-//   { "x": 5, "y": 0 },
-//   { "x": 6, "y": 0 },
-//   { "x": 6, "y": 1 },
-//   { "x": 5, "y": 4 },
-//   { "x": 5, "y": 5 },
-//   { "x": 6, "y": 5 },
 // ];
-// const indexes = [0, 6, 5, 4, 3, 1, 2];
-// console.log(indexes.map((index) => points[index]));
-
-// console.log(points);
+const points = [
+  { "x": 0, "y": 0 },
+  { "x": 1, "y": 0 },
+  { "x": 1, "y": 1 },
+  { "x": 2, "y": 1 },
+  { "x": 3, "y": 4 },
+  { "x": 4, "y": 4 },
+  { "x": 3, "y": 5 },
+  { "x": 5, "y": 0 },
+  { "x": 6, "y": 0 },
+  { "x": 6, "y": 1 },
+  { "x": 5, "y": 4 },
+  { "x": 5, "y": 5 },
+  { "x": 6, "y": 5 },
+];
 
 export default function main() {
   //   console.log(getPath(points));
