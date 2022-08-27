@@ -63,7 +63,8 @@ function findMinPath(points: Point[]): {
         return;
       }
       const newPath = [...currentPath, point];
-      const newDist = getDist(currentPath.at(-1)!, point) + currentDist;
+      const newDist = getDist(currentPath[currentPath.length - 1], point) +
+        currentDist;
       if (newDist >= minDist) {
         return;
       }
