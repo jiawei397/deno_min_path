@@ -79,18 +79,16 @@ function getIndexes(lastPoints: Point[], originPoints: Point[]) {
 
 function getPath(points: Point[]) {
   const startTime = Date.now();
-  console.time("getPath");
-  const originPoints = [...points];
-  sort(points);
+  const clonedPoints = [...points];
+  sort(clonedPoints);
   const { minDist, minPath } = findMinPath(points);
-  const indexes = getIndexes(minPath, originPoints);
-  console.timeEnd("getPath");
+  const indexes = getIndexes(minPath, points);
   return {
     dist: minDist,
     path: indexes,
     time: Date.now() - startTime,
     finalPoints: minPath,
-    originPoints,
+    originPoints: points,
   };
 }
 

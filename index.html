@@ -6,8 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>find min path</title>
+  <script src="https://loading.uino.cn/loading.js" async></script>
   <script type="module" defer>
-    import main from './index.js';
+    import run from './index.js';
 
     let points = [
       { "x": 0, "y": 0 },
@@ -28,21 +29,25 @@
 
 
     function generate(count) {
-      const set = new Set();
-      const makePoint = () => {
-        return { x: Math.round(Math.random() * count), y: Math.round(Math.random() * count) };
-      };
-      const getUniquePoint = () => {
-        let point = makePoint(count);
-        if (set.has(point.x + ',' + point.y)) {
-          point = getUniquePoint(count);
-        } else {
-          set.add(point.x + ',' + point.y);
+      loading.show();
+      setTimeout(() => {
+        const set = new Set();
+        const makePoint = () => {
+          return { x: Math.round(Math.random() * count), y: Math.round(Math.random() * count) };
+        };
+        const getUniquePoint = () => {
+          let point = makePoint(count);
+          if (set.has(point.x + ',' + point.y)) {
+            point = getUniquePoint(count);
+          } else {
+            set.add(point.x + ',' + point.y);
+          }
+          return point;
         }
-        return point;
-      }
-      points = Array.from(new Array(count)).map(_ => getUniquePoint());
-      draw(main(points));
+        points = Array.from(new Array(count)).map(_ => getUniquePoint());
+        draw(run(points));
+        loading.hide();
+      }, 100);
     }
 
     function draw({ originPoints, finalPoints, dist, time }) {
@@ -84,18 +89,33 @@
       ctx.fillStyle = "red";
       ctx.fillText(`dist: ${dist}`, 900, 50);
 
-      ctx.font = '20px "微软雅黑"';
       ctx.fillStyle = "green";
       ctx.fillText(`time: ${time} ms`, 900, 100);
+
+      ctx.fillStyle = "gray";
+      ctx.fillText(`points:`, 900, 200);
+      for (let i = 0; i < originPoints.length; i++) {
+        ctx.fillStyle = "rebeccapurple";
+        ctx.fillText(`${originPoints[i].x}, ${originPoints[i].y}`, 980, 200 + i * 30);
+      }
     }
 
     const originPoints = [...points];
-    function start() {
-      draw(main(originPoints));
+    function start(points = originPoints) {
+      loading.show();
+      setTimeout(() => {
+        draw(run(points));
+        loading.hide();
+      }, 100);
+    }
+
+    function refresh() {
+      start(points);
     }
 
     window.start = start;
     window.generate = generate;
+    window.refresh = refresh;
 
   </script>
   <style>
@@ -133,10 +153,10 @@
   <header>
     <button onclick="start()">origin</button>
     <button onclick="generate(13)">generate</button>
+    <button onclick="refresh()">refresh</button>
   </header>
   <div class="container">
     <canvas id="canvas" width="1300" height="1000"></canvas>
-
   </div>
 </body>
 
