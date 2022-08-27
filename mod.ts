@@ -62,7 +62,7 @@ function findMinPath(points: Point[]): {
   };
 }
 
-export function getAllDis(points: Point[]) {
+function getAllDis(points: Point[]) {
   let dis = 0;
   points.reduce((pre, cur) => {
     dis += getDis(pre, cur);
@@ -94,35 +94,33 @@ function getPath(points: Point[]) {
   };
 }
 
-// const points = [
-//   //   { "x": 0, "y": 1 },
-//   { "x": 0, "y": 0 },
-//   { "x": 2.8, "y": 6 },
-//   { "x": 1.3, "y": 5.1 },
-//   { "x": 1.3, "y": 4.5 },
-//   { "x": 2.1, "y": 3.3 },
-//   { "x": 1.3, "y": 2 },
-//   { "x": 1, "y": 1 },
-// ];
-const points = [
-  { "x": 0, "y": 0 },
-  { "x": 1, "y": 0 },
-  { "x": 1, "y": 1 },
-  { "x": 2, "y": 1 },
-  { "x": 3, "y": 4 },
-  { "x": 4, "y": 4 },
-  { "x": 3, "y": 5 },
-  { "x": 5, "y": 0 },
-  { "x": 6, "y": 0 },
-  { "x": 6, "y": 1 },
-  { "x": 5, "y": 4 },
-  { "x": 5, "y": 5 },
-  { "x": 6, "y": 5 },
-];
+export default getPath;
 
-export default function main() {
-  //   console.log(getPath(points));
-  return getPath(points);
+if (import.meta.main) {
+  // const points = [
+  //   //   { "x": 0, "y": 1 },
+  //   { "x": 0, "y": 0 },
+  //   { "x": 2.8, "y": 6 },
+  //   { "x": 1.3, "y": 5.1 },
+  //   { "x": 1.3, "y": 4.5 },
+  //   { "x": 2.1, "y": 3.3 },
+  //   { "x": 1.3, "y": 2 },
+  //   { "x": 1, "y": 1 },
+  // ];
+  const points = [
+    { "x": 0, "y": 0 },
+    { "x": 1, "y": 0 },
+    { "x": 1, "y": 1 },
+    { "x": 2, "y": 1 },
+    { "x": 3, "y": 4 },
+    { "x": 4, "y": 4 },
+    { "x": 3, "y": 5 },
+    { "x": 5, "y": 0 },
+    { "x": 6, "y": 0 },
+    { "x": 6, "y": 1 },
+    { "x": 5, "y": 4 },
+    { "x": 5, "y": 5 },
+    { "x": 6, "y": 5 },
+  ];
+  getPath(points);
 }
-
-// main();

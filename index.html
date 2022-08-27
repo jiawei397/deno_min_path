@@ -5,35 +5,59 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    #canvas {
-      padding: 50px;
+  <title>find min path</title>
+  <script type="module" defer>
+    import main from './index.js';
+
+    let points = [
+      { "x": 0, "y": 0 },
+      { "x": 1, "y": 0 },
+      { "x": 1, "y": 1 },
+      { "x": 2, "y": 1 },
+      { "x": 3, "y": 4 },
+      { "x": 4, "y": 4 },
+      { "x": 3, "y": 5 },
+      { "x": 5, "y": 0 },
+      { "x": 6, "y": 0 },
+      { "x": 6, "y": 1 },
+      { "x": 5, "y": 4 },
+      { "x": 5, "y": 5 },
+      { "x": 6, "y": 5 },
+    ];
+
+
+
+    function generate(count) {
+      const set = new Set();
+      const makePoint = () => {
+        return { x: Math.round(Math.random() * count), y: Math.round(Math.random() * count) };
+      };
+      const getUniquePoint = () => {
+        let point = makePoint(count);
+        if (set.has(point.x + ',' + point.y)) {
+          point = getUniquePoint(count);
+        } else {
+          set.add(point.x + ',' + point.y);
+        }
+        return point;
+      }
+      points = Array.from(new Array(count)).map(_ => getUniquePoint());
+      draw(main(points));
     }
-  </style>
-</head>
 
-<body>
-
-  <canvas id="canvas" width="1000" height="1000"></canvas>
-
-
-  <script type="module">
-    import main, { getAllDis } from './index.js';
-
-
-    let Bei = 80;
-
-    const canvasPoints = (oldPoints, newPoints, dist, time) => {
+    function draw({ originPoints, finalPoints, dist, time }) {
+      let Bei = 60;
       let canvasEle = document.getElementById('canvas');
       let ctx = canvasEle.getContext('2d');
-
-      if (!ctx) return;
+      var w = canvasEle.width;
+      var h = canvasEle.height;
+      canvasEle.width = w;
+      canvasEle.height = h;
 
       // 画线
-      for (let i = 0; i < newPoints.length; i++) {
-        const curNode = newPoints[i];
-        const nextNode = newPoints[i + 1];
+      for (let i = 0; i < finalPoints.length; i++) {
+        const curNode = finalPoints[i];
+        const nextNode = finalPoints[i + 1];
         if (!nextNode) break;
         ctx.moveTo(curNode.x * Bei, curNode.y * Bei);
         ctx.lineTo(nextNode.x * Bei, nextNode.y * Bei);
@@ -41,8 +65,8 @@
       }
 
       // 画圆点
-      for (let i = 0; i < oldPoints.length; i++) {
-        let { x, y } = oldPoints[i];
+      for (let i = 0; i < originPoints.length; i++) {
+        let { x, y } = originPoints[i];
         ctx.beginPath();
         ctx.arc(x * Bei, y * Bei, 6, 0, 2 * Math.PI, false);
         ctx.fillStyle = '#FF0000';
@@ -58,23 +82,62 @@
       // 写字
       ctx.font = '20px "微软雅黑"';
       ctx.fillStyle = "red";
-      ctx.fillText(`dist: ${dist}`, 800, 100);
+      ctx.fillText(`dist: ${dist}`, 900, 50);
 
       ctx.font = '20px "微软雅黑"';
       ctx.fillStyle = "green";
-      ctx.fillText(`time: ${time} ms`, 800, 150);
+      ctx.fillText(`time: ${time} ms`, 900, 100);
+    }
 
-    };
+    const originPoints = [...points];
+    function start() {
+      draw(main(originPoints));
+    }
 
+    window.start = start;
+    window.generate = generate;
 
-    const { originPoints, finalPoints, dist, time } = main();
-    // console.log(dist);
-    canvasPoints(originPoints, finalPoints, dist, time);
-
-    // const indexes = [0, 6, 5, 4, 3, 2, 1];
-    // const points = indexes.map((index) => originPoints[index]);
-    // console.log(getAllDis(points));
   </script>
+  <style>
+    header {
+      width: 300px;
+      height: 50px;
+      /* border: 1px solid rebeccapurple; */
+      display: flex;
+      align-content: center;
+      justify-content: center;
+    }
+
+    button {
+      width: 80px;
+      height: 30px;
+      margin: 10px;
+    }
+
+    /* .container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #textarea {
+      width: 450px;
+    } */
+
+    #canvas {
+      padding: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <button onclick="start()">origin</button>
+    <button onclick="generate(13)">generate</button>
+  </header>
+  <div class="container">
+    <canvas id="canvas" width="1300" height="1000"></canvas>
+
+  </div>
 </body>
 
 </html>

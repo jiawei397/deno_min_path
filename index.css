@@ -1,9 +1,0 @@
-.container {
-  position: relative;
-}
-
-.point {
-  position: absolute;
-  border: 6px solid red;
-  border-radius: 50%;
-}
