@@ -81,7 +81,7 @@ function findMinPath(points: Point[]): {
   };
 }
 
-function getAllDis(points: Point[]) {
+export function getAllDis(points: Point[]) {
   let dis = 0;
   points.reduce((pre, cur) => {
     dis += getDist(pre, cur);
