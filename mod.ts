@@ -4,38 +4,34 @@ interface Point {
 }
 
 function getDis(p1: Point, p2: Point) {
-  return Math.sqrt(getSquares(p1, p2));
+  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
-function getSquares(p1: Point, p2: Point) {
-  return Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p1.y, 2);
-}
-
-function sort(points: Point[]): Point[] {
+function sort(points: Point[]) {
   points.sort((a, b) => {
     if (a.x < b.x) return -1;
     if (a.x > b.x) return 1;
     if (a.y < b.y) return -1;
     return 0;
   });
+}
 
+function findMinPath(points: Point[]): {
+  minPath: Point[];
+  minDist: number;
+} {
   let minDist = Infinity;
-  let minPath: number[] = [];
+  let minPath: Point[] = [];
 
   function getAllPath() {
-    const lastPaths: number[][] = [];
-    const paths: number[][] = [];
+    const lastPaths: Point[][] = [];
+    const paths: Point[][] = [];
     const len = points.length;
-    let allIndexes = Array.from(new Array(points.length)).map((_, i) => i);
-    console.log(
-      "🚀 ~ file: mod.ts ~ line 31 ~ getAllPath ~ allIndexes",
-      allIndexes,
-    );
     points.forEach((_, i) => {
       if (i === 0) {
         return;
       }
-      paths.push([0, i]);
+      paths.push([points[0], points[i]]);
     });
 
     while (paths.length) {
@@ -44,11 +40,11 @@ function sort(points: Point[]): Point[] {
         lastPaths.push(first);
         continue;
       }
-      allIndexes.forEach((i) => {
-        if (first.includes(i)) {
+      points.forEach((point) => {
+        if (first.includes(point)) {
           return;
         }
-        paths.push([...first, i]);
+        paths.push([...first, point]);
       });
     }
     return lastPaths;
@@ -59,14 +55,17 @@ function sort(points: Point[]): Point[] {
   console.timeEnd("getAllPath");
 
   paths.forEach((path) => {
-    const dist = getAllDis(path.map((index) => points[index]));
+    const dist = getAllDis(path);
     if (dist < minDist) {
       minDist = dist;
       minPath = path;
     }
   });
 
-  return minPath.map((index) => points[index]);
+  return {
+    minPath,
+    minDist,
+  };
 }
 
 export function getAllDis(points: Point[]) {
@@ -89,14 +88,14 @@ function getIndexes(lastPoints: Point[], originPoints: Point[]) {
 function getPath(points: Point[]) {
   console.time("getPath");
   const originPoints = [...points];
-  const lastPoints = sort(points);
-  const indexes = getIndexes(points, originPoints);
-  const dist = getAllDis(lastPoints);
+  sort(points);
+  const { minDist, minPath } = findMinPath(points);
+  const indexes = getIndexes(minPath, originPoints);
   console.timeEnd("getPath");
   return {
-    dist,
+    dist: minDist,
     path: indexes,
-    finalPoints: lastPoints,
+    finalPoints: minPath,
     originPoints,
   };
 }
